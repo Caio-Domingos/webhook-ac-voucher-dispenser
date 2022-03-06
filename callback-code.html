@@ -1,0 +1,57 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+  const data = jeitoCaioDeFazerIsso();
+  const email = data.params.email;
+
+  if (!!email) {
+    // Do something
+
+    setTimeout(() => {
+      axios
+        .get(
+          `https://us-central1-brius-lab.cloudfunctions.net/ac/callback/${email}`
+        )
+        .then(function (response) {
+          // handle success
+          console.log(response.data.voucher);
+          document.querySelector("#voucher").innerHTML = response.data.voucher;
+        })
+        .catch(function (error) {
+          // handle error
+          console.log(error);
+        })
+        .then(function () {
+          // always executed
+        });
+    }, 5000);
+  }
+
+  function jeitoCaioDeFazerIsso() {
+    console.log("Iniciando jeitoCaioDeFazerIsso...");
+    let myParams = location.href.split("?");
+    console.log("Meus params", myParams);
+    if (myParams.length <= 1) {
+      console.log("Sem parametros");
+      return {
+        url: myParams[1],
+        params: {},
+      };
+    }
+    var data = {
+      url: myParams[1],
+      params: {},
+    };
+    console.log("Data before => ", data);
+    myParams = myParams[1];
+    myParams = "?" + myParams;
+    myParams
+      .substr(1)
+      .split("&")
+      .forEach(function (item) {
+        data.params[item.split("=")[0]] = item.split("=")[1];
+      });
+    console.log("Data after => ", data);
+    return data;
+  }
+</script>
